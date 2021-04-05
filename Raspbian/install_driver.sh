@@ -8,7 +8,17 @@ echo "Enable uctronics-hslcd35 driver..."
 sudo sed 's/dtoverlay=uctronics-hslcd35//g' -i /boot/config.txt
 sudo sed '/^$/d' -i /boot/config.txt
 sudo sed '$a dtoverlay=uctronics-hslcd35' -i /boot/config.txt
-sudo cp ./usr/$(uname -r)/uctronics-hslcd35-overlay.dtb /boot/overlays/uctronics-hslcd35.dtbo
+
+# Give the user a choice to force an older install on a newer kernel version
+VERSION=$(uname -r)
+echo "Disable auto-version selection? (y/n)"
+read USER_INPUT
+case $USER_INPUT in
+'y'|'Y')
+    VERSION="5.4.83-v7l+"
+    echo "Manually installing version $VERSION"
+;;
+sudo cp ./usr/$VERSION/uctronics-hslcd35-overlay.dtb /boot/overlays/uctronics-hslcd35.dtbo
 
 echo "Change display resolution..."
 sudo sed 's/hdmi_force_hotplug=1//g' -i /boot/config.txt
